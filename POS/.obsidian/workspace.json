@@ -1,0 +1,213 @@
+{
+  "main": {
+    "id": "59a7dfa52e269c3a",
+    "type": "split",
+    "children": [
+      {
+        "id": "d6ad73ed72b48a62",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "76a16a7deb0a43bd",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "00-MOC/POS Frontend MOC.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "POS Frontend MOC"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "7f59827c0cf833c7",
+    "type": "split",
+    "children": [
+      {
+        "id": "e8764b7214a1a8dd",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "c513d24eff59cfc1",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Files"
+            }
+          },
+          {
+            "id": "1825f175072e8f78",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Search"
+            }
+          },
+          {
+            "id": "3a67244e305c80df",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "Bookmarks"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "d62226a5b4b4ae10",
+    "type": "split",
+    "children": [
+      {
+        "id": "c8654ce35f422eea",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "83f86880ddd2a0af",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Backlinks"
+            }
+          },
+          {
+            "id": "edfee2816d607d9c",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Outgoing links"
+            }
+          },
+          {
+            "id": "f4f04366940d242f",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "Tags"
+            }
+          },
+          {
+            "id": "237ffeb2b42785b1",
+            "type": "leaf",
+            "state": {
+              "type": "all-properties",
+              "state": {
+                "sortOrder": "frequency",
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-archive",
+              "title": "All properties"
+            }
+          },
+          {
+            "id": "fd49a694a2701f02",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "Untitled.md",
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Outline of Untitled"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false,
+      "bases:Create new base": false
+    }
+  },
+  "active": "c513d24eff59cfc1",
+  "lastOpenFiles": [
+    "Untitled",
+    "00-MOC/POS Frontend MOC.md",
+    "Untitled.md",
+    "Patterns/Animation Patterns.md",
+    "Theme/POS UI Mistakes.md",
+    "Components/Toast Alert System.md",
+    "Components/Sales Cashier.md",
+    "Components/Settings Components.md",
+    "Components/Purchasing Components.md",
+    "Components/Layout Components.md",
+    "Backend/Backend Architecture.md",
+    "Backend/GORM Patterns.md",
+    "00-MOC/POS Backend MOC.md",
+    "Backend/Backend Bug Fixes.md",
+    "Patterns/BFF Proxy Routes.md",
+    "Patterns/i18n Patterns.md",
+    "i18n Patterns.md",
+    "Project/POS Project Overview.md",
+    "00-MOC/POS Project MOC.md",
+    "00-MOC/POS Features MOC.md",
+    "Patterns/API Client Patterns.md",
+    "Backend/Backend Docs Map.md",
+    "Components/Stock Components.md",
+    "Features/Receipt Payment Settings.md",
+    "Features/Product Form Drawer.md",
+    "Features/Category Management.md"
+  ]
+}
