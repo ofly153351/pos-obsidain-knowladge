@@ -25,6 +25,7 @@ All animations are **CSS keyframes** defined in `app/globals.css`.
 | `modal-slide-in`  | opacity 0→1 + translateX(-100%→0) | 320ms    | ⚠️ Legacy only — do NOT use for new modals |
 | `modal-slide-out` | opacity 1→0 + translateX(0→60px)  | 200ms    | ⚠️ Legacy only                             |
 | `detail-slide-in` | opacity 0→1 + translateX(-80px→0) | 300ms    | ⚠️ Deprecated — use `smooth-fade-up`       |
+| `slide-in-right`  | opacity 0→1 + translateX(100%→0)  | 300ms    | **Right-side drawers** (Document A4 preview) |
 
 Delay helpers: `smooth-delay-1` (60ms) · `smooth-delay-2` (120ms)
 

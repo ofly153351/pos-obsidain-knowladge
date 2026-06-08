@@ -45,6 +45,35 @@ const rows = XLSX.utils.sheet_to_json(ws);
 
 The locale key `warehouse.exportLabel` was updated in both `locales/th.json` and `locales/en.json`.
 
+---
+
+## Product Import — 3-Step Preview Flow (added 2026-06-04)
+
+File: `components/stock/import-product-modal.tsx`
+
+**Flow:** `idle → preview → importing → done`
+
+**Template columns (11):** ชื่อสินค้า, SKU, Barcode, ราคาขาย, ราคาทุน, สต็อก, สต็อกขั้นต่ำ, หน่วย, หมวดหมู่, แบรนด์, คำอธิบาย  
+(Active removed — defaults to `true` on backend)
+
+**Preview step:** Parses file → shows table with all rows, validates name/price, highlights errors before import.
+
+**Auto-create logic (`LookupCache`):**
+- Loads all existing types/units/brands once
+- Resolves name → ID; creates via API if not found, caches result
+- Category = `createProductType`, Unit = `createProductUnit`, Brand = `createProductBrand`
+
+**Import result:** Progress bar per-row, success/fail count, error details per failed row.
+
+```ts
+class LookupCache {
+  async resolveType(name: string): Promise<string>  // auto-creates if missing
+  async resolveUnit(name: string): Promise<string>
+  async resolveBrand(name: string): Promise<string>
+}
+```
+
 ## Related
 - [[Stock Components]] — parent section
 - [[i18n Patterns]] — locale key update pattern
+- [[API Client Patterns]] — createProductType/Unit/Brand service calls

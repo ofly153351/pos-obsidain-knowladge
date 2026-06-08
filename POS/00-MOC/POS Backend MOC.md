@@ -10,6 +10,14 @@ created: 2026-05-27
 ## Architecture
 - [[Backend Architecture]] — Go Fiber v2, route→handler→service→repo, cross-store warehouse transfer
 
+## Store
+- [[Store Module]] — contact fields (fax/email/website), repository NOT NULL pattern, migration 011
+
+## Documents & PDF
+- [[Document PDF & WHT]] — Invoice vs Bill layouts (HTML + gofpdf), WHT cert, §86/4 compliance, store contact fields
+  - Rendering in `platform/dochtml/` + `platform/docpdf/` — no circular deps
+  - Business logic in `modules/document/` — calls platform via `toDocData()` mapper
+
 ## Bugs Fixed
 - [[Backend Bug Fixes]] — sale 500, proxy 404, GORM Take silent empty string, discount_value=0 400 error
 

@@ -9,11 +9,11 @@ created: 2026-05-27
 
 ## Files
 
-| File | Role |
-|------|------|
-| `components/purchasing/supplier-manager.tsx` | 2-panel shell + sub-components |
-| `components/purchasing/add-supplier-modal.tsx` | Create supplier modal |
-| `services/suppliers.ts` | API service + `CreateSupplierInput` type |
+| File                                           | Role                                     |
+| ---------------------------------------------- | ---------------------------------------- |
+| `components/purchasing/supplier-manager.tsx`   | 2-panel shell + sub-components           |
+| `components/purchasing/add-supplier-modal.tsx` | Create supplier modal                    |
+| `services/suppliers.ts`                        | API service + `CreateSupplierInput` type |
 
 ## Layout Pattern — 2-Panel Master-Detail
 
@@ -163,9 +163,39 @@ credit_days?: number;
 ~100 keys added under `purchasing.supplierUI` and `purchasing.addSupplierModal`.  
 See [[i18n Patterns]] for key structure.
 
+---
+
+## EditSupplierModal — Full Fields (updated 2026-06-04)
+
+File: `components/purchasing/supplier-manager.tsx` — `EditSupplierModal`
+
+Expanded from 7 fields to full supplier data:
+
+| Section | Fields |
+|---------|--------|
+| Logo | Upload/remove with preview (PNG/JPG ≤ 2MB) |
+| Contact | ชื่อบริษัท*, ผู้ติดต่อ, โทร, email, LINE ID |
+| Payment | Toggle: PromptPay / บัญชีธนาคาร / ไม่ระบุ |
+| Credit | Preset buttons (0/7/15/30/45/60/90 วัน) + custom input |
+| Address | ที่อยู่, เลขผู้เสียภาษี, หมายเหตุ |
+| Status | Toggle พร้อม label active/inactive |
+
+Modal: `max-w-3xl`, scrollable body, gradient header.
+
+### File Upload Fix
+
+BFF routes for supplier POST/PUT now use `request.blob()` (not `request.text()`) to preserve multipart boundary.
+
+```ts
+const body = await request.blob();
+return proxyApiRequest(request, url, { body, method: "POST" });
+```
+
+See [[BFF Proxy Routes]] — multipart rule.
+
 ## Related
 - [[Animation Patterns]] — `smooth-fade-up`, `fade-out`, `key` re-mount trick
 - [[POS Today Theme]] — gradient hero tokens, KPI primary card, button-on-dark styles
 - [[API Client Patterns]] — TanStack Query: `useQuery(["suppliers"])`, `useMutation`
-- [[BFF Proxy Routes]] — supplier CRUD endpoints
+- [[BFF Proxy Routes]] — supplier CRUD endpoints + multipart fix
 - [[Toast Alert System]] — CRUD result notifications

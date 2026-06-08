@@ -1,7 +1,7 @@
 ---
-tags: [pos, component, settings, store]
+tags: [pos, component, settings, store, bank-accounts]
 created: 2026-05-22
-updated: 2026-05-27
+updated: 2026-06-01
 ---
 
 # ⚙️ Settings Components
@@ -26,6 +26,13 @@ Two-panel layout (same pattern as [[Supplier Management]]):
 - Text: `text-white` — NOT `text-violet-900` or `text-violet-700`
 
 **Switch store button:** gradient CTA with `text-white` (see [[POS UI Mistakes]])
+
+### Bank Account Manager (Payment section)
+Dropdown of 15 Thai banks + account no + account name inputs.  
+Add button → `createBankAccount()` → appends to list.  
+Each row: bank name + account no (mono) + trash delete button.  
+Loaded on store select via `listBankAccounts(storeId)`.  
+See [[Store Module]] for backend schema and [[BFF Proxy Routes]] for API routes.
 
 ## receipt-payment-settings.tsx
 

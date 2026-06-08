@@ -1,7 +1,7 @@
 ---
 tags: [pos, backend, go, fiber, architecture, gorm]
 created: 2026-05-22
-updated: 2026-05-27
+updated: 2026-06-04
 ---
 
 # 🔌 Backend Architecture
@@ -28,6 +28,8 @@ Route (app.go)
 ```
 
 Never skip layers. Service validates business rules. Repository handles DB queries only.
+
+**Platform packages** (`internal/platform/`) are pure utilities with no business-logic imports — they can be used by any module. Modules **import** platform packages; platform packages do **not** import modules (one-way dependency).
 
 ## Module Registration
 
@@ -68,10 +70,90 @@ This is why [[API Client Patterns]] distinguishes `authorizedApiRequest` (unwrap
 | `internal/modules/warehouse_receipt/` | Receive goods wizard |
 | `internal/modules/sale/` | Cashier / POS sales |
 | `internal/modules/stock/` | Stock movements |
-| `internal/platform/receipthtml/` | Receipt HTML rendering (`RenderPanelPreviewHTML`) |
+| `internal/modules/document/` | Document business logic only (CRUD, status, orchestration) |
+| `internal/platform/receipthtml/` | POS receipt HTML (`RenderPanelPreviewHTML`) |
+| `internal/platform/dochtml/` | Document HTML templates — Invoice, Bill, WHT cert (see [[Document PDF & WHT]]) |
+| `internal/platform/docpdf/` | Document PDF renderers — Invoice, Bill, Statement (gofpdf + embedded fonts) |
+
+| `internal/modules/activity_log/` | Auto-log all store mutations (added 2026-06-03) |
+| `internal/modules/parkedbill/` | Hold/restore bills in cashier |
+| `internal/modules/usersettings/` | Per-user prefs (card_settings JSONB) — `GET/PUT /me/card-settings` (added 2026-06-08) |
+
+---
+
+## JSONB columns — Valuer/Scanner pattern
+
+Store struct ↔ JSONB by implementing `driver.Valuer` (`Value() → json.Marshal`) +
+`sql.Scanner` (`Scan(any) → json.Unmarshal`, handle `[]byte` **and** `string`) on the type,
+and tag the field `gorm:"type:jsonb"`. Read/write through that field — **never** raw
+`Update("col", []byte)` / `Scan(&[]byte)` (→ `jsonb is of type bytea` error / unreliable scan).
+Examples: `usersettings.CardSettings`, `receipt_settings.PaymentChannels`.
+
+---
+
+## Structured Error Format (added 2026-06-04)
+
+`internal/platform/httpx/response.go` now returns `APIError{code, fields}`:
+
+```go
+// Single field validation
+httpx.Err422(c, "name", "name is required")
+
+// Multiple fields
+httpx.ValidationError(c,
+  httpx.FieldError{Field: "name", Message: "required"},
+  httpx.FieldError{Field: "price", Message: "must be >= 0"},
+)
+
+// Other codes
+httpx.ErrNotFound(c, "product not found")
+httpx.ErrForbidden(c, "user cannot operate this store")
+httpx.ErrConflict(c, "product is already in use")
+httpx.ErrInternal(c)
+```
+
+JSON response:
+```json
+{ "success": false, "message": "validation failed",
+  "error": { "code": "VALIDATION_ERROR", "fields": [{"field":"name","message":"required"}] } }
+```
+
+Each module's `writeXxxError()` maps sentinel errors to field names.
+
+---
+
+## Activity Log Middleware
+
+Fiber after-middleware that auto-logs every successful POST/PUT/PATCH/DELETE scoped to `:storeID` routes.
+
+```go
+protected.Use(middleware.ActivityLog(deps.activityLogHandler.Service()))
+```
+
+Path parsing extracts `module` and `action` from URL without touching existing handlers.
+
+---
+
+## Backend Tests
+
+Location: `internal/tests/` — 27 tests, all passing.
+
+| Package | Tests |
+|---------|-------|
+| `tests/httpx` | Err422, ErrNotFound, ErrForbidden, ErrConflict, ErrInternal, multi-field |
+| `tests/customer` | ValidateCustomerInput (name, email, level) |
+| `tests/sale` | Sentinel error distinctness |
+| `tests/purchasing` | Sentinel error distinctness |
+| `tests/parkedbill` | note/customerID nullable constraints |
+| `tests/document` | Sentinel errors non-nil/non-empty |
+| `tests/product` | Image replace/delete safety |
+| `tests/store` | Logo replace/delete safety |
+
+---
 
 ## Related
 - [[Backend Bug Fixes]] — all critical bugs and their fixes
 - [[GORM Patterns]] — database query patterns
+- [[Document PDF & WHT]] — document HTML/PDF/WHT rendering
 - [[BFF Proxy Routes]] — how frontend connects to backend
 - [[Backend Docs Map]] — documentation files for each module

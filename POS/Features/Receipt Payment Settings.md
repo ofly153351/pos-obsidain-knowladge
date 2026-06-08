@@ -70,8 +70,27 @@ The receipt settings component had the toggle knob bug.
 Fix: `left-0.5 top-0.5` on the knob span + `translate-x-0` off / `translate-x-5` on.  
 See [[POS UI Mistakes]].
 
+## Receipt Layout Rewrite (2026-06-06)
+
+`internal/platform/receipthtml/template.go` — new **80mm thermal layout**:
+- Header (store name/addr/phone/taxid) → doc title → info rows (เลขที่/วันที่/ลูกค้า/พนักงาน/ชำระโดย) → numbered items (`N. name` + total, `qty x price`) → count (รายการ/ชิ้น) → totals → **ยอดสุทธิ** → รับเงิน/เงินทอน → footer.
+- `baht` helper = `฿` + thousands separator (`฿1,200.00`); items line `qty x price` uses plain `money`.
+- `PaymentLabel(method)` → Thai label; `TotalQty` auto-fill; `Paid`/`Change` from sale.
+- **Default paper size 80mm** (58mm removed everywhere). `printWidth`: a4→210mm else 80mm.
+
+### Store-aware logo & QR (2026-06-06)
+- Logo previously never rendered: `store.LogoURL` was never set. Fixed — Sale model + repo now select `stores.logo_url` → `StoreLogoURL`; receipt sets `store.LogoURL`. TaxID from store record (was env var).
+- PromptPay QR builder moved to shared `receipthtml/promptpay.go` (`PromptPayQRDataURI`). Settings **preview now renders the real QR** from store promptpay_id (was a blank placeholder).
+- Respects settings toggles: ShowLogo/LogoPosition, ShowStoreName/Address/Phone/TaxId, TaxMode, ShowQr.
+- Tests: `internal/tests/receipthtml/` (13 — layout, baht commas, exclusive VAT, QR/logo shown-hidden, PaymentLabel).
+
+### Settings page i18n + tabs (2026-06-05)
+- Full i18n `receiptSettings` dict (th/en) — server page passes `t` prop, no hardcoded strings.
+- Printer + Display tabs disabled (code kept); paper-size options = 80mm / A4 only.
+
 ## Related
 - [[Settings Components]] — component map
+- [[Product Card Settings]] — sibling **per-user** settings (this one is per-store)
 - [[API Client Patterns]] — `authorizedApiRequest` for settings queries
 - [[BFF Proxy Routes]] — receipt-settings BFF route
 - [[POS UI Mistakes]] — receipt preview panel note, toggle knob bug

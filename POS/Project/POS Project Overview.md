@@ -50,6 +50,8 @@ app/[locale]/
 
 ## Recent Commits (`fix-of/dev`)
 
+> Document module shipped 2026-05-29: see [[Document Management]] + [[Document PDF & WHT]]. FE: `a25b206` (page overhaul + receipt panel), `02d371e` (types/locales). BE: `4daaaf3` (PDF/WHT/§86·4/Bill), `51086e4` (handler/logo/routing), `db4131f` (store tax_id migration).
+
 | Commit | Description |
 |--------|-------------|
 | `4c847df` | Upscale supplier UI + standard fade transitions |

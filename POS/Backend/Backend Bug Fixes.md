@@ -1,7 +1,7 @@
 ---
 tags: [pos, backend, bugs, fixes, gorm, go]
 created: 2026-05-22
-updated: 2026-05-27
+updated: 2026-06-04
 ---
 
 # 🐛 Backend Bug Fixes
@@ -126,8 +126,89 @@ See [[Receipt Payment Settings]].
 
 ---
 
+---
+
+## Store Update — NOT NULL Constraint Violation (SQLSTATE 23502)
+
+**Bug:** `PUT /stores/:storeID` threw `null value in column "tax_id" violates not-null constraint`.  
+**Cause:** Repository `Update` payload used `nilIfEmpty(update.TaxID)` — returned `nil` for empty string, but `tax_id`, `fax`, `email`, `website` are `NOT NULL DEFAULT ''`.  
+**Fix:** Use bare string value for NOT NULL columns; reserve `nilIfEmpty()` for nullable columns only.
+
+```go
+// ✅ NOT NULL columns — empty string is valid, nil is NOT
+"tax_id":  update.TaxID,
+"fax":     update.Fax,
+"email":   update.Email,
+"website": update.Website,
+
+// ✅ nullable columns — nilIfEmpty OK
+"phone":   nilIfEmpty(update.Phone),
+"address": nilIfEmpty(update.Address),
+```
+
+Also fixed: `GetByID` and `ListByUser` were not SELECTing `tax_id`, `fax`, `email`, `website` at all.
+
+See [[Store Module]] for full schema + repository patterns.
+
+---
+
+---
+
+## parked_bills — note NOT NULL + customer_id nullable (2026-06-03)
+
+**Bug 1:** `INSERT INTO parked_bills` failed — `null value in column "note"`.  
+**Cause:** Code sent `nil` when `bill.Note == ""`.  
+**Fix:** Always send `bill.Note` (empty string is valid — column is NOT NULL DEFAULT '').  
+Migration `017`: `ALTER TABLE parked_bills ALTER COLUMN note SET DEFAULT ''; ALTER ... SET NOT NULL;`
+
+**Bug 2:** `null value in column "customer_id"` for walk-in customers.  
+**Fix:** Only set `customer_id` in insert payload when non-empty. Column dropped NOT NULL.  
+Migration `018`: `ALTER TABLE parked_bills ALTER COLUMN customer_id DROP NOT NULL;`
+
+File: `internal/modules/parkedbill/repository.go`
+
+---
+
+## Supplier File Upload 500 — BFF reads body as text (2026-06-03)
+
+**Bug:** POST/PUT supplier with logo → 500 Internal Server Error.  
+**Cause:** BFF route used `request.text()` which converts multipart binary to string, destroying the boundary.  
+**Fix:** Use `request.blob()` instead — preserves binary data; `buildForwardHeaders` correctly forwards `Content-Type` including the boundary.
+
+```ts
+// ❌ Wrong — destroys multipart
+const body = await request.text();
+
+// ✅ Correct — binary-safe
+const body = await request.blob();
+return proxyApiRequest(request, url, { body, method: "POST" });
+```
+
+Affected routes: `app/api/stores/[storeId]/suppliers/route.ts` and `.../[supplierId]/route.ts`
+
+See [[BFF Proxy Routes]].
+
+---
+
+## AdjustStock FK violation — location_id empty string (2026-06-02)
+
+**Bug:** `AdjustStock` failed with FK constraint on `location_id`.  
+**Cause:** Passed `&""` (pointer to empty string) — FK expects NULL or valid ID.  
+**Fix:** Resolve via `findDefaultStockLocation`, use `*string` nil pointer when no location.
+
+---
+
+## MinIO MINIO_PUBLIC_URL double bucket name (2026-06-03)
+
+**Bug:** Image URLs rendered as `https://media.phiraphat.site/pos-assets/pos-assets/products/...`  
+**Cause:** `MINIO_PUBLIC_URL` was set to `https://media.phiraphat.site/pos-assets` — the bucket name was already appended by the SDK path.  
+**Fix:** Set `MINIO_PUBLIC_URL=https://media.phiraphat.site` (no bucket path suffix).
+
+---
+
 ## Related
 - [[GORM Patterns]] — GORM-specific fixes
+- [[Store Module]] — NOT NULL pattern, contact fields
 - [[Backend Architecture]] — transfer flow fix context
 - [[API Client Patterns]] — print helper bug
 - [[Warehouse Receive Flow]] — discount_value bug context

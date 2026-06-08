@@ -1,7 +1,7 @@
 ---
 tags: [pos, pattern, bff, proxy, routes, nextjs, api]
 created: 2026-05-22
-updated: 2026-05-27
+updated: 2026-06-04
 ---
 
 # 🔀 BFF Proxy Routes
@@ -10,18 +10,42 @@ updated: 2026-05-27
 
 Next.js Route Handlers in `app/api/stores/[storeId]/` proxy to Go backend at `http://localhost:8080` (env: `API_BASE_URL`).
 
-**Key rule:** `storeId` in the BFF URL path is NOT forwarded to the backend as a path param. The backend resolves store access from the **JWT token** and resource ownership.
+Proxy logic: `lib/api-proxy.ts` — forwards `pos-access-token` cookie as `Authorization: Bearer` header.
 
-Proxy logic: `lib/api-proxy.ts` — strips `/api/stores/[storeId]/`, forwards `pos-access-token` cookie or `Authorization` header.
+**Body forwarding rule (updated 2026-06-04):**
+- **JSON body:** `await request.text()` → pass as `body` string
+- **File upload (multipart):** `await request.blob()` → pass as `body` Blob — **never use `request.text()` for multipart**, it destroys the binary boundary
+- **Raw passthrough:** `request.body ?? undefined` (ReadableStream) — may have Node.js duplex issues, prefer `blob()`
 
 ---
 
-## Stock
+## Documents
 
-| BFF (`/api/stores/:storeId/...`) | Go Backend (`/api/v1/...`) |
-|----------------------------------|---------------------------|
-| `POST /stock/add` | `POST /stock-movements/in` |
-| `GET /stock/movements` | `GET /stock-movements` |
+| BFF (`/api/stores/:storeId/documents/...`) | Backend (`/api/v1/stores/:storeID/documents/...`) |
+|--------------------------------------------|--------------------------------------------------|
+| `GET/POST /documents` | `GET/POST .../documents` |
+| `GET/DELETE /documents/:id` | `GET/DELETE .../documents/:docID` |
+| `PUT /documents/:id/status` | `PUT .../documents/:docID/status` |
+| `POST /documents/bulk` | `POST .../documents/bulk` |
+| `GET /documents/:id/print` | `GET .../documents/:docID/print` → HTML |
+| `GET /documents/:id/pdf` | `GET .../documents/:docID/pdf` → PDF |
+| `GET /documents/:id/wht-cert` | `GET .../documents/:docID/wht-cert` → HTML |
+| `GET /documents/statement` | `GET .../documents/statement` → PDF |
+| `POST /documents/:id/pay` | `POST .../documents/:docID/pay` |
+| `POST /documents/:id/convert-tax` | `POST .../documents/:docID/convert-tax` |
+| `POST /documents/:id/convert-do` | `POST .../documents/:docID/convert-do` ← ใบส่งของ |
+| `POST /documents/:id/convert` | `POST .../documents/:docID/convert` ← quotation→invoice |
+
+---
+
+## Store
+
+| BFF | Backend |
+|-----|---------|
+| `GET /stores/:storeId` | `GET /api/v1/stores/:storeID` |
+| `PUT /stores/:storeId` | `PUT /api/v1/stores/:storeID` (FormData — logo upload) |
+| `GET/POST /stores/:storeId/bank-accounts` | `GET/POST .../bank-accounts` |
+| `DELETE /stores/:storeId/bank-accounts/:accountId` | `DELETE .../bank-accounts/:accountID` |
 
 ---
 
@@ -33,21 +57,16 @@ Proxy logic: `lib/api-proxy.ts` — strips `/api/stores/[storeId]/`, forwards `p
 
 ---
 
-## Receipts (Warehouse Receive)
+## Receipts (Warehouse)
 
-| BFF (`/api/stores/:storeId/receipts/...`) | Go Backend (`/api/v1/warehouse/receipts/...`) |
-|------------------------------------------|----------------------------------------------|
+| BFF (`/receipts/...`) | Backend (`/warehouse/receipts/...`) |
+|-----------------------|--------------------------------------|
 | `GET/POST /receipts` | `GET/POST /warehouse/receipts` |
 | `GET/PUT /receipts/:id` | `GET/PUT /warehouse/receipts/:id` |
-| `POST /receipts/:id/items` | `POST /warehouse/receipts/:id/items` |
 | `POST /receipts/:id/confirm` | `POST /warehouse/receipts/:id/confirm` |
 | `POST /receipts/:id/cancel` | `POST /warehouse/receipts/:id/cancel` |
-| `POST /receipts/:id/attachments` ← plural | `POST /warehouse/receipts/:id/attachment` ← singular |
-| `GET /receipts/:id/stock-impact` | `GET /warehouse/receipts/:id/stock-impact` |
+| `POST /receipts/:id/attachments` | `POST /warehouse/receipts/:id/attachment` |
 | `GET /receipts/:id/print` | `GET /warehouse/receipts/:id/print` |
-| `POST /receipts/generate-document-no` | `POST /warehouse/receipts/generate-document-no` |
-
-> Note: BFF uses `attachments` (plural), backend uses `attachment` (singular). Route Handler translates.
 
 ---
 
@@ -55,50 +74,60 @@ Proxy logic: `lib/api-proxy.ts` — strips `/api/stores/[storeId]/`, forwards `p
 
 | BFF | Backend |
 |-----|---------|
-| `GET/PUT /receipt-settings` | `GET/PUT /api/v1/stores/:storeID/receipt-settings` |
+| `GET/PUT /receipt-settings` | `GET/PUT .../receipt-settings` |
 
 ---
 
-## Suppliers / Purchasing
+## Stock
 
 | BFF | Backend |
 |-----|---------|
-| `GET/POST /suppliers` | `GET/POST /suppliers` |
-| `GET/PUT/DELETE /suppliers/:id` | `GET/PUT/DELETE /suppliers/:id` |
-| `GET/POST /purchase-orders` | `GET/POST /purchase-orders` |
-
----
-
-## Early Bugs Fixed
-
-| Wrong BFF Path | Correct Path | Result |
-|----------------|--------------|--------|
-| `/stock/add` | `/stock-movements/in` | 404 → fixed |
-| `/stock/movements` | `/stock-movements` | 404 → fixed |
-
-See [[Backend Bug Fixes]].
+| `POST /stock/add` | `POST /stock-movements/in` |
+| `GET /stock/movements` | `GET /stock-movements` |
 
 ---
 
 ## BFF Route Handler Boilerplate
 
 ```ts
-// app/api/stores/[storeId]/receipt-settings/route.ts
-import { authorizedProxy } from "@/lib/api-proxy";
-
-export async function GET(req: Request, { params }: { params: { storeId: string } }) {
-  return authorizedProxy(req, `/api/v1/stores/${params.storeId}/receipt-settings`);
+// GET — no body needed
+export async function GET(request: Request, { params }: Ctx) {
+  const { storeId } = await params;
+  return proxyApiRequest(request, `/api/v1/stores/${storeId}/documents`);
 }
 
-export async function PUT(req: Request, { params }: { params: { storeId: string } }) {
-  return authorizedProxy(req, `/api/v1/stores/${params.storeId}/receipt-settings`, "PUT");
+// POST with JSON body
+export async function POST(request: Request, { params }: Ctx) {
+  const { storeId } = await params;
+  const body = await request.text();
+  return proxyApiRequest(request, `/api/v1/stores/${storeId}/bank-accounts`, { method: "POST", body });
+}
+
+// POST/PUT with file upload (multipart) — use blob(), never text()
+export async function POST(request: Request, { params }: Ctx) {
+  const { storeId } = await params;
+  const body = await request.blob(); // ← binary-safe; preserves multipart boundary
+  return proxyApiRequest(request, `/api/v1/stores/${storeId}/suppliers`, { method: "POST", body });
+}
+
+// PUT with FormData re-constructed (store logo via formData() → FormData obj)
+export async function PUT(request: Request, { params }: Ctx) {
+  const { storeId } = await params;
+  const formData = await request.formData();
+  return proxyApiRequest(request, `/api/v1/stores/${storeId}`, { method: "PUT", body: formData });
 }
 ```
+
+### Activity Logs
+
+| BFF | Backend |
+|-----|---------|
+| `GET /stores/:storeId/activity-logs` | `GET .../activity-logs?page&limit&module&action&date_from&date_to` |
 
 ---
 
 ## Related
 - [[API Client Patterns]] — how frontend calls these routes
 - [[Backend Architecture]] — Go Fiber route registration
-- [[Backend Bug Fixes]] — wrong proxy paths
-- [[Warehouse Receive Flow]] — receipts BFF usage
+- [[Document Management]] — document action routes
+- [[Document PDF & WHT]] — print/pdf/wht-cert routes
