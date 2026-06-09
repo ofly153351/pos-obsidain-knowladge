@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Features/Document Management.md",
+                "file": "SOUL.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Document Management"
+              "title": "SOUL"
             }
           }
         ]
@@ -185,9 +185,11 @@
   },
   "active": "d79110056e06665d",
   "lastOpenFiles": [
+    "Features/Barcode & Labels.md",
+    "Features/Inventory & Stock Counting.md",
+    "Features/Document Management.md",
     "Backend/Document PDF & WHT.md",
     "Features/Invoice Print Feature.md",
-    "Features/Document Management.md",
     "00-MOC/POS Project MOC.md",
     "00-MOC/POS Frontend MOC.md",
     "00-MOC/POS Features MOC.md",
@@ -209,8 +211,6 @@
     "Patterns/BFF Proxy Routes.md",
     "Patterns/i18n Patterns.md",
     "i18n Patterns.md",
-    "Project/POS Project Overview.md",
-    "Patterns/API Client Patterns.md",
-    "Components/Stock Components.md"
+    "Project/POS Project Overview.md"
   ]
 }

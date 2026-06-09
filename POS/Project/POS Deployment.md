@@ -61,7 +61,9 @@ bash golive.sh
 8. `pm2 save`
 9. Health checks + print URLs
 
-**Branch model:** dev work on `fix-of/dev` → promote (`git merge --ff-only`) → `main` → push both → production pulls `main`.
+**Branch model:** dev work on a `fix-<person>/dev` branch → promote (`git merge --ff-only`) → `main` → push → production pulls `main`.
+- `fix-of/dev` — primary dev branch (this session's work).
+- `fix-kaew/dev` — Wutthichai's branch (frontend stock/inventory/barcode overhaul, 2026-06-09, not yet merged to main). See [[Barcode & Labels]] · [[Inventory & Stock Counting]].
 
 **Git sync (updated 2026-06-08):** `sync_repo()` does
 `fetch <tokenized-url> main` → `checkout -B main` → `reset --hard FETCH_HEAD`, dies on any failure.

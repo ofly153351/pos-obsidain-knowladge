@@ -45,8 +45,19 @@ Key patterns in this component:
 - Transfer creates cloned product chain in destination store
 - See [[Backend Architecture]] for the transfer flow
 
+## Stock module overhaul (2026-06-09, Wutthichai — `fix-kaew/dev`)
+
+`products-table.tsx` rewritten into an **ERP/WMS table** (barcode+copy / stock-bar /
+location / status columns, persisted density toggle, sticky header, floating bulk bar).
+New siblings: `product-detail-view.tsx`, `product-card-grid.tsx`, `storage-assignment-card.tsx`,
+`barcode-modal.tsx`, `barcode-batch-modal.tsx`. Inventory split into its own module.
+
+See [[Barcode & Labels]] · [[Inventory & Stock Counting]].
+
 ## Related
 - [[Category Management]] — full catalog-setup-section feature
 - [[Stock Levels Excel]] — Excel import/export
+- [[Barcode & Labels]] — barcode engine + ERP table
+- [[Inventory & Stock Counting]] — /inventory module
 - [[BFF Proxy Routes]] — stock proxy routes
 - [[Backend Architecture]] — cross-store transfer flow

@@ -23,7 +23,12 @@ const SIZE   = { sm:{…}, md:{…}, lg:{…} }; // scales EVERY dimension per s
 ```
 
 Anti-squeeze rules (the two bugs it prevents):
-- **Image never squeezed** → image box has fixed `aspect-ratio` (not `flex:1` in a fixed-height card).
+- **Image never squeezed** → image box uses a **fixed px height** from
+  `resolveCardImageHeight(settings)` (lib/card-settings.ts, `CARD_IMAGE_HEIGHT[size][aspect]`) + `shrink-0`.
+  > Updated 2026-06-09 (Wutthichai): switched **from CSS `aspect-ratio` → fixed px height**.
+  > aspect-ratio got flex-squeezed into a thin strip in `cover` mode and went tiny in `contain`.
+  > The resolved height is the single source of truth shared by the real grid **and** the modal
+  > preview, so they always match. `contain` → `object-contain p-2`; card no longer uses `h-full`.
 - **Long name never breaks layout** → `line-clamp-N` + inline `style.minHeight = N × 1.35em` → uniform card height, price row aligned.
 
 `size` (sm/md/lg) scales font / padding / add-button / initials / badges together (not just grid column width — that was the "sizes feel wrong" fix). Grid column width = `minmax(CARD_SIZE_MIN[size], 1fr)` set by the parent.
