@@ -78,6 +78,15 @@ This is why [[API Client Patterns]] distinguishes `authorizedApiRequest` (unwrap
 | `internal/modules/activity_log/` | Auto-log all store mutations (added 2026-06-03) |
 | `internal/modules/parkedbill/` | Hold/restore bills in cashier |
 | `internal/modules/usersettings/` | Per-user prefs (card_settings JSONB) — `GET/PUT /me/card-settings` (added 2026-06-08) |
+| `internal/modules/expense/` + `finance/` | Expenses + P&L/summary/inventory reports — see [[Finance & Reports]] (2026-06) |
+| `internal/modules/creditsale/` | Credit sales — **reuses the `sale` service** for pricing/stock — see [[Credit Sales]] |
+| `internal/modules/promotion/` | Promotion rules + usage audit — see [[Promotions]] |
+| `internal/modules/member/` | Store members, roles & status — see [[User Management]] |
+| `internal/modules/location/` + `provisioning/` | Location hierarchy + default warehouse/sale-location provisioning — see [[Multi-Location Inventory]] |
+| `internal/modules/stock_movement/` | Location-aware in/out/transfer/adjust movements |
+| `internal/modules/stockcount/` | Physical stock-count sessions — see [[Inventory & Stock Counting]] |
+| `internal/modules/payment/` | Dynamic PromptPay QR (`GET /…/promptpay-qr`) — see [[Customer Display]] |
+| `internal/modules/warehouse_dashboard/` | Warehouse KPI aggregations — see [[Dashboard Command Center]] |
 
 ---
 

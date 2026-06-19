@@ -22,8 +22,18 @@ created: 2026-05-27
 | [[Activity Logs]] | ✅ Done | `activity-logs-client.tsx`, `internal/modules/activity_log/`, middleware |
 | [[Product Card Settings]] | ✅ Done | `product-card.tsx`, `card-settings-modal.tsx`, `internal/modules/usersettings/` (per-user JSONB) |
 | [[Auth Pages]] | ✅ Done | `auth-shell.tsx`, `auth-form.tsx` (2-panel login/register) |
-| [[Inventory & Stock Counting]] | 🟡 `fix-kaew/dev` | `inventory-manager.tsx`, `stock-count-manager.tsx`, `stock-adjust-drawer.tsx` |
-| [[Barcode & Labels]] | 🟡 `fix-kaew/dev` | `barcode-batch-modal.tsx`, `lib/barcode.ts`, `lib/qr.ts`, `lib/pdf.ts` |
+| [[Inventory & Stock Counting]] | ✅ Done | `inventory-manager.tsx`, `stock-count-manager.tsx`, `stock-adjust-drawer.tsx` |
+| [[Barcode & Labels]] | ✅ Done | `barcode-batch-modal.tsx`, `lib/barcode.ts`, `lib/qr.ts`, `lib/pdf.ts` |
+| [[Multi-Location Inventory]] | ✅ Done | `internal/modules/{location,provisioning,stock_movement}`, `components/warehouse/inventory/` |
+| [[Finance & Reports]] | ✅ Done | `internal/modules/{expense,finance}`, `/finance/*`, `/reports/*` |
+| [[Credit Sales]] | ✅ Done | `internal/modules/creditsale/` (reuses sale pipeline), `/credit-sales` |
+| [[Promotions]] | ✅ Done | `internal/modules/promotion/`, `promotion-engine.ts`, `/promotions` |
+| [[User Management]] | ✅ Done | `internal/modules/member/`, `lib/use-store-role.ts`, `/settings/staff` |
+| [[Customer Display]] | ✅ Done | `customer-display/page.tsx`, `lib/customer-display.ts`, `internal/modules/payment/` |
+| [[Customer Management]] | ✅ Done | `/customers`, `types/customer.ts` (tax ID + branch + hierarchy) |
+| [[Dashboard Command Center]] | ✅ Done | `/dashboard`, `internal/modules/warehouse_dashboard/` |
+
+> 2026-06 `fix-kaew/dev` batch (Wutthichai): the 8 rows below + [[Inventory & Stock Counting]]/[[Barcode & Labels]] promoted to Done. See [[POS Project Overview]] commit table.
 
 ## Shared Infrastructure Used by All Features
 

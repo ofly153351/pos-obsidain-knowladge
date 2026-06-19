@@ -1,14 +1,14 @@
 ---
 tags: [pos, moc, index]
 created: 2026-05-27
-updated: 2026-06-04
+updated: 2026-06-19
 ---
 
 # 🗺️ POS Project — Master Map of Content
 
 > **POS Today** — Retail Point-of-Sale platform.
 > Frontend: Next.js 15 + TypeScript + Tailwind CSS 4 + TanStack Query
-> Backend: Go Fiber v2 + GORM + PostgreSQL · Branch: `fix-of/dev`
+> Backend: Go Fiber v2 + GORM + PostgreSQL · Branch: `fix-kaew/dev`
 
 ---
 
@@ -37,6 +37,9 @@ updated: 2026-06-04
 - [[Warehouse Receive Flow]] — 3-step wizard, autosave, barcode scan, PO import
 - [[Product Form Drawer]] — left-side drawer, POS live preview card
 - [[Receipt Payment Settings]] — live backend preview, payment channels JSONB
+- [[Inventory & Stock Counting]] — inventory module + physical count sessions
+- [[Barcode & Labels]] — barcode/QR/label generation
+- **2026-06 `fix-kaew/dev` batch:** [[Multi-Location Inventory]] · [[Finance & Reports]] · [[Credit Sales]] · [[Promotions]] · [[User Management]] · [[Customer Display]] · [[Customer Management]] · [[Dashboard Command Center]]
 
 ## 🔌 Backend
 - [[Backend Architecture]] — route→handler→service→repo, cross-store transfer flow

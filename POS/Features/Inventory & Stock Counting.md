@@ -29,9 +29,15 @@ Dedicated **inventory module** split out from the product catalog (added 2026-06
 
 ## Stock counting (`/inventory/counts`)
 - `stock-count-manager.tsx` — physical count session workflow (count vs system, variance).
+- Backend `internal/modules/stockcount/` — session CRUD + apply:
+  - `GET /…/stock-count-sessions` · `GET/PUT /…/:sessionID` (save) · `POST /…/:sessionID/apply` · `DELETE /…/:sessionID`
+  - Applying writes `COUNT_CORRECTION` stock movements. Migration `022_stock_count_sessions.sql`.
 
 ## i18n
 - ~145 new keys each in `th.json` / `en.json` (inventory + counting).
 
+## Update (2026-06) — now location-aware
+Stock is tracked **per location**, not just per store. Adjustments, transfers, and POS sale deductions are all location-scoped. See [[Multi-Location Inventory]] for the location module, provisioning of a default warehouse/sale location, and the warehouse-scoped inventory view.
+
 ## Related
-- [[Stock Components]] · [[Barcode & Labels]] · [[Warehouse Receive Flow]]
+- [[Multi-Location Inventory]] · [[Stock Components]] · [[Barcode & Labels]] · [[Warehouse Receive Flow]]

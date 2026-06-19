@@ -1,7 +1,7 @@
 ---
 tags: [pos, pattern, bff, proxy, routes, nextjs, api]
 created: 2026-05-22
-updated: 2026-06-04
+updated: 2026-06-19
 ---
 
 # 🔀 BFF Proxy Routes
@@ -83,7 +83,47 @@ Proxy logic: `lib/api-proxy.ts` — forwards `pos-access-token` cookie as `Autho
 | BFF | Backend |
 |-----|---------|
 | `POST /stock/add` | `POST /stock-movements/in` |
+| `POST /stock/out` | `POST /stock-movements/out` |
+| `POST /stock/adjust` | `POST /stock-movements/adjust` |
 | `GET /stock/movements` | `GET /stock-movements` |
+| `POST /stock-movements/transfer` | `POST /stock-movements/transfer` (location→location) |
+| `GET /stock/products/:productId` | `GET /stock/products/:productID` |
+
+---
+
+## Locations & Warehouse Inventory (2026-06, [[Multi-Location Inventory]])
+
+| BFF | Backend |
+|-----|---------|
+| `GET/POST /locations` · `GET /locations/tree` | location CRUD + hierarchy |
+| `GET/PATCH/DELETE /locations/:locationId` (+ `/products`) | per-location |
+| `PATCH/DELETE /locations/zones` · `/locations/floors` | rename/delete groups |
+| `GET /warehouses/:warehouseId/inventory/products` | sellable/storage/total split |
+| `GET /warehouses/:warehouseId/inventory` · `POST .../inventory/:productId/allocate` | cross-store transfers awaiting allocation |
+| `POST /warehouses/:warehouseId/transfer` | warehouse transfer |
+
+---
+
+## Finance & Reports (2026-06, [[Finance & Reports]])
+
+| BFF | Backend |
+|-----|---------|
+| `GET/POST /expenses` · `GET/PATCH/DELETE /expenses/:expenseId` · `GET /expenses/summary` | expense module |
+| `GET/POST /expense-categories` · `PATCH/DELETE /expense-categories/:categoryId` | categories |
+| `GET /finance/pnl` · `/finance/summary` · `/finance/inventory` | finance aggregations |
+
+---
+
+## Credit Sales · Promotions · Stock Count · Members · Customers · QR (2026-06)
+
+| BFF | Feature |
+|-----|---------|
+| `/credit-sales` (+ `/summary`, `/:id`, `/:id/payments`, `/:id/cancel`, `/:id/statement`) | [[Credit Sales]] |
+| `/promotions` (+ `/:promotionId`) | [[Promotions]] |
+| `/stock-count-sessions` (+ `/:sessionId`, `/:sessionId/apply`) | [[Inventory & Stock Counting]] |
+| `/members` (+ `/:userId`) | [[User Management]] |
+| `/customers/:customerId/children` · `/tree` | [[Customer Management]] |
+| `/promptpay-qr` | [[Customer Display]] (dynamic PromptPay QR) |
 
 ---
 

@@ -1,7 +1,7 @@
 ---
 tags: [pos, project, setup, stack]
 created: 2026-05-22
-updated: 2026-05-27
+updated: 2026-06-19
 ---
 
 # POS Project Overview
@@ -15,7 +15,7 @@ updated: 2026-05-27
 | Frontend | `/Users/obx/projects/pos-frontend` | `3000` |
 | Backend  | `/Users/obx/projects/pos-backend`  | Go/Fiber `8080` |
 
-**Branch:** `fix-of/dev`
+**Branch:** `fix-kaew/dev` (active — Wutthichai). Older work landed on `fix-of/dev`.
 
 ## Stack
 
@@ -39,16 +39,47 @@ app/[locale]/
 ├── (user)/
 │   └── (workspace)/
 │       ├── sales/
-│       ├── stock/
-│       │   └── categories/
+│       ├── dashboard/
+│       ├── products/ (categories/)        ← catalog (new /products route, 28ea8d1)
+│       ├── inventory/ (counts/)           ← stock truth + counting
+│       ├── stock/ (categories/ warehouses/)
 │       ├── warehouse/
+│       │   ├── overview/
 │       │   └── receive/[id]/step-1|step-2|step-3|view
-│       ├── purchasing/
-│       └── settings/
+│       ├── purchases/ (suppliers/)        ← purchasing+receiving unified (b08be4d)
+│       ├── credit-sales/                  ← ขายเชื่อ/ยืมสินค้า
+│       ├── promotions/
+│       ├── customers/
+│       ├── finance/ (expenses/ pnl/)
+│       ├── reports/ (summary/ inventory-value/)
+│       ├── profile/
+│       ├── documents/ (pending/)
+│       └── settings/ (staff/ receipt-payment/ storage-locations/ activity-logs/)
+├── customer-display/                      ← second screen (outside workspace)
+├── print/ (invoice/[saleId]  document/[documentId])
 └── (admin)/
 ```
 
-## Recent Commits (`fix-of/dev`)
+## Recent Commits
+
+### `fix-kaew/dev` — major delivery 2026-06-09 → 06-16 (Wutthichai)
+A large multi-feature batch. New feature notes: [[Finance & Reports]], [[Credit Sales]], [[Promotions]], [[User Management]], [[Customer Display]], [[Multi-Location Inventory]], [[Customer Management]], [[Dashboard Command Center]].
+
+| Area | FE / BE commits |
+|------|-----------------|
+| Multi-location inventory | FE `5f1692f`/`2fd42c7`/`034265e`/`115ed2e`/`98c81c9`/`8158acc` · BE `f8fcd68`/`212bc61`/`872e551`/`3ae2f4b`/`840131f`/`3262a55` |
+| Finance & Reports | FE `481e3a6`/`1e74e34` · BE `8b40faa`/`43edea2`/`330f8e9` |
+| Credit sales + Promotions + Stock count | FE `649e9ab`/`321e0e0` · BE `48e7393` |
+| User management & permissions | FE `c0ed329` · BE `d9b0180`/`7bfa210` |
+| Customer display (screen 2) | FE `b70ffb4` · BE `e7216e4` |
+| Dashboard command center | FE `2071e7d`/`155a2ee`/`4a814a9` · BE `dd29120` |
+| Customers redesign | FE `bbd9af9` |
+| Products /products route + module overhaul | FE `28ea8d1`/`a93b8d6` |
+| Purchasing+receiving unified workspace | FE `b08be4d`/`fb37eca`/`fa71115` · BE `cd64dd1`/`79848f4` |
+| Profile/account settings | FE `1e85949` |
+| Security / production hardening | FE `5bf31e2`/`e435f53` · BE `45408fa`/`c296d75` |
+
+### `fix-of/dev` (earlier)
 
 > Document module shipped 2026-05-29: see [[Document Management]] + [[Document PDF & WHT]]. FE: `a25b206` (page overhaul + receipt panel), `02d371e` (types/locales). BE: `4daaaf3` (PDF/WHT/§86·4/Bill), `51086e4` (handler/logo/routing), `db4131f` (store tax_id migration).
 
